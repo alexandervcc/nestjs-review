@@ -11,9 +11,14 @@ export class AppService {
   }
 
   createNewDog(newDog: Dog): Dog {
-    newDog.id = this.counter;
     this.counter++;
+    newDog.id = this.counter;
     this.listDogs.push(newDog);
     return newDog;
+  }
+
+  getById(dogId: number): Dog {
+    const dog = this.listDogs.find((d) => d.id === dogId);
+    return dog;
   }
 }

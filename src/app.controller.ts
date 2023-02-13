@@ -7,6 +7,7 @@ import {
   Body,
   Header,
   Redirect,
+  Param,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Request } from 'express';
@@ -32,4 +33,9 @@ export class AppController {
   @Get("/redirect")
   @Redirect('https://nestjs.com', 301)
   redirectTest() {}
+
+  @Get("/:id")
+  findOne(@Param("id") idDog:number): Dog {
+    return this.appService.getById(+idDog);
+  }
 }
