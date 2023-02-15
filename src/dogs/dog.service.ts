@@ -1,8 +1,8 @@
-import { Injectable } from "@nestjs/common/decorators";
-import { Dog } from "src/model/Dog";
+import { Injectable } from '@nestjs/common/decorators';
+import { Dog } from 'src/model/Dog';
 
 @Injectable()
-export class DogService{
+export class DogService {
   private counter = 0;
   private listDogs: Dog[] = [];
 
@@ -10,7 +10,7 @@ export class DogService{
     return this.listDogs.slice();
   }
 
-  createNewDog(newDog: Dog): Dog {
+  async createNewDog(newDog: Dog): Promise<Dog> {
     this.counter++;
     newDog.id = this.counter;
     this.listDogs.push(newDog);

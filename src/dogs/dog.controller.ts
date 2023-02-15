@@ -10,9 +10,11 @@ import {
   Param,
   ParseIntPipe,
   HttpStatus,
+  UsePipes,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { Dog } from 'src/model/Dog';
+import { createDogSchema, Dog } from 'src/model/Dog';
+import { DogValidationPipe } from 'src/pipes/dog-validation.pipe';
 import { DogService } from './dog.service';
 
 @Controller('dogs')
@@ -28,8 +30,9 @@ export class DogController {
 
   @Post()
   @HttpCode(201)
-  createDog(@Body() dogDto: Dog): Dog {
-    return this.appService.createNewDog(dogDto);
+  @UsePipes(new DogValidationPipe(createDogSchema))
+  async createDog(@Body() dogDto: Dog): Promise<Dog> {
+    return await this.appService.createNewDog(dogDto);
   }
 
   @Get('/redirect')
