@@ -7,12 +7,11 @@ import {
   Body,
   Header,
   Redirect,
-  Param,
+  Param
 } from '@nestjs/common';
 import { Request } from 'express';
 import { Dog } from 'src/model/Dog';
 import { DogService } from './dog.service';
-
 
 @Controller('dogs')
 export class DogController {
@@ -39,4 +38,5 @@ export class DogController {
   findOne(@Param('id') idDog: number): Dog {
     return this.appService.getById(+idDog);
   }
+
 }
