@@ -14,7 +14,8 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { createDogSchema, Dog } from 'src/model/Dog';
-import { DogValidationPipe } from 'src/pipes/dog-validation.pipe';
+import { DogValidationPipeClass } from 'src/pipes/dog-validation-class.pipe';
+import { DogValidationPipeJoi } from 'src/pipes/dog-validation-joi.pipe';
 import { DogService } from './dog.service';
 
 @Controller('dogs')
@@ -28,10 +29,18 @@ export class DogController {
     return this.appService.getAllDogs();
   }
 
-  @Post()
+  @Post('/add')
   @HttpCode(201)
-  @UsePipes(new DogValidationPipe(createDogSchema))
-  async createDog(@Body() dogDto: Dog): Promise<Dog> {
+  @UsePipes(new DogValidationPipeJoi(createDogSchema))
+  async createDogJoi(@Body() dogDto: Dog): Promise<Dog> {
+    return await this.appService.createNewDog(dogDto);
+  }
+
+  @Post('/create')
+  @HttpCode(201)
+  async createDogClassValidation(
+    @Body(new DogValidationPipeClass()) dogDto: Dog,
+  ): Promise<Dog> {
     return await this.appService.createNewDog(dogDto);
   }
 

@@ -1,9 +1,14 @@
-import * as Joi from 'joi'
+import { IsString, IsInt, Min } from 'class-validator';
+import * as Joi from 'joi';
 
 export class Dog {
   id?: number;
+  @IsString()
   name: string;
+  @IsString()
   breed: string;
+  @IsInt()
+  @Min(0)
   age: number;
 }
 
