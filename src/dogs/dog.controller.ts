@@ -7,7 +7,9 @@ import {
   Body,
   Header,
   Redirect,
-  Param
+  Param,
+  ParseIntPipe,
+  HttpStatus,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { Dog } from 'src/model/Dog';
@@ -34,9 +36,15 @@ export class DogController {
   @Redirect('https://nestjs.com', 301)
   redirectTest() {}
 
+  //findOne(@Param('id', ParseIntPipe) idDog: number): Dog {
   @Get('/:id')
-  findOne(@Param('id') idDog: number): Dog {
-    return this.appService.getById(+idDog);
+  findOne(
+    @Param(
+      'id',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    )
+    idDog: number,
+  ): Dog {
+    return this.appService.getById(idDog);
   }
-
 }
