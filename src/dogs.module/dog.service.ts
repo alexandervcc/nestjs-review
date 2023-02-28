@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common/decorators';
 import { Dog } from 'src/model/Dog';
 import { Scope } from '@nestjs/common';
+import { LazyModuleLoader } from '@nestjs/core';
 
 //Configure scope of object: like a Global Singleton, or a new instance per consumer/request.
 @Injectable({ scope: Scope.DEFAULT })
 export class DogService {
   private counter = 0;
   private listDogs: Dog[] = [];
+
+  //Lazy module loading
+  constructor(private lazyModuleLoader: LazyModuleLoader) {}
 
   getAllDogs(): Dog[] {
     return this.listDogs.slice();
