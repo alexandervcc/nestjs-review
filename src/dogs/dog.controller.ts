@@ -11,14 +11,18 @@ import {
   ParseIntPipe,
   HttpStatus,
   UsePipes,
+  UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { Roles } from 'src/decorators/roles.decorator';
+import { AuthGuard } from 'src/guards/auth.guard';
 import { createDogSchema, Dog } from 'src/model/Dog';
 import { DogValidationPipeClass } from 'src/pipes/dog-validation-class.pipe';
 import { DogValidationPipeJoi } from 'src/pipes/dog-validation-joi.pipe';
 import { DogService } from './dog.service';
 
 @Controller('dogs')
+@UseGuards(AuthGuard)//Using guard with DI
 export class DogController {
   constructor(private readonly appService: DogService) {}
 
@@ -31,6 +35,7 @@ export class DogController {
 
   @Post('/add')
   @HttpCode(201)
+  @Roles("admin")//Custom decorator in order to check metadata
   @UsePipes(new DogValidationPipeJoi(createDogSchema))
   async createDogJoi(@Body() dogDto: Dog): Promise<Dog> {
     return await this.appService.createNewDog(dogDto);

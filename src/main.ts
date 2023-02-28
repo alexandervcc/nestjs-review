@@ -1,7 +1,6 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import {NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { AllExceptionsFilter } from './filters/all-exceptioin.filter';
-import { HttpExceptionFilter } from './filters/http-exception.filter';
+import { AuthGuard } from './guards/auth.guard';
 import { funtionLoggerMiddleware } from './middleware/logger.middleware';
 
 async function bootstrap() {
@@ -16,6 +15,9 @@ async function bootstrap() {
   //Configure Based Extended Global Filter
   //const { httpAdapter } = app.get(HttpAdapterHost);
   //app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
+
+  //Configure Global Guard
+  app.useGlobalGuards(new AuthGuard())
 
   await app.listen(3000);
 }
