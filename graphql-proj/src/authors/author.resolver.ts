@@ -19,7 +19,7 @@ export class AuthorsResolver {
     private postsService: PostService,
   ) {}
 
-  @Query((returns) => Author, { name: 'author' })
+  @Query((returns) => Author, { name: 'getOneAuthor' })
   async getAuthor(@Args('id', { type: () => Int }) id: number) {
     return this.authorsService.findOneById(id);
   }

@@ -1,0 +1,22 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Post {
+  id: Int!
+  title: String!
+  content: String!
+  votes: Int
+}
+
+type Author {
+  id: Int!
+  firstName: String
+  lastName: String
+  posts: [Post!]!
+}
+
+type Query {
+  getOneAuthor(id: Int!): Author!
+  author(offset: Int! = 0, limit: Int! = 10, firstName: String, lastName: String! = ""): Author!
+}
