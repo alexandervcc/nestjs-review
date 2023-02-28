@@ -14,11 +14,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { Roles } from 'src/decorators/roles.decorator';
-import { AuthGuard } from 'src/guards/auth.guard';
-import { createDogSchema, Dog } from 'src/model/Dog';
-import { DogValidationPipeClass } from 'src/pipes/dog-validation-class.pipe';
-import { DogValidationPipeJoi } from 'src/pipes/dog-validation-joi.pipe';
+import { Roles} from '../decorators/roles.decorator';
+import { AuthGuard } from '../guards/auth.guard';
+import { createDogSchema, Dog } from '../model/Dog';
+import { DogValidationPipeClass } from '../pipes/dog-validation-class.pipe';
+import { DogValidationPipeJoi } from '../pipes/dog-validation-joi.pipe';
 import { DogService } from './dog.service';
 
 @Controller('dogs')
@@ -29,7 +29,7 @@ export class DogController {
   @Get()
   @HttpCode(200)
   @Header('Cache-Control', 'none')
-  getHello(@Req() request: Request): Dog[] {
+  getAllDogs(): Dog[] {
     return this.appService.getAllDogs();
   }
 
@@ -51,7 +51,7 @@ export class DogController {
 
   @Get('/redirect')
   @Redirect('https://nestjs.com', 301)
-  redirectTest() {}
+  redirectTest(@Req() request: Request) {}
 
   //findOne(@Param('id', ParseIntPipe) idDog: number): Dog {
   @Get('/:id')

@@ -1,22 +1,27 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { DogController } from './dog.controller';
 import { DogService } from './dog.service';
 
-describe('AppController', () => {
-  let appController: DogController
+describe('Dogs Controller', () => {
+  let dogController: DogController;
+  let dogService: DogService;
 
   beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
+    const moduleRef = await Test.createTestingModule({
       controllers: [DogController],
       providers: [DogService],
     }).compile();
 
-    appController = app.get<DogController>(DogController);
+    dogService = moduleRef.get<DogService>(DogService);
+    dogController = moduleRef.get<DogController>(DogController);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      //expect(appController.getHello()).toBe('Hello World!');
+  describe('findAll Dogs', () => {
+    it('Dhould return an array of dogs', async () => {
+      const result = [];
+      jest.spyOn(dogService, 'getAllDogs').mockImplementation(() => result);
+
+      expect(dogController.getAllDogs()).toBe(result);
     });
   });
 });

@@ -10,7 +10,9 @@ export class DogService {
   private listDogs: Dog[] = [];
 
   //Lazy module loading
-  constructor(private lazyModuleLoader: LazyModuleLoader) {}
+  //constructor(private lazyModuleLoader: LazyModuleLoader) {}
+
+  constructor() {}
 
   getAllDogs(): Dog[] {
     return this.listDogs.slice();
