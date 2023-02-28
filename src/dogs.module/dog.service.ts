@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common/decorators';
 import { Dog } from 'src/model/Dog';
+import { Scope } from '@nestjs/common';
 
-@Injectable()
+//Configure scope of object: like a Global Singleton, or a new instance per consumer/request.
+@Injectable({ scope: Scope.DEFAULT })
 export class DogService {
   private counter = 0;
   private listDogs: Dog[] = [];
