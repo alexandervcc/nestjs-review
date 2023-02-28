@@ -19,7 +19,7 @@ describe('Dogs Controller', () => {
   describe('findAll Dogs', () => {
     it('Dhould return an array of dogs', async () => {
       const result = [];
-      jest.spyOn(dogService, 'getAllDogs').mockImplementation(() => result);
+      jest.spyOn(dogService, 'getAll').mockImplementation(() => result);
 
       expect(dogController.getAllDogs()).toBe(result);
     });

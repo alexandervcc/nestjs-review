@@ -14,7 +14,7 @@ export class DogService {
 
   constructor() {}
 
-  getAllDogs(): Dog[] {
+  getAll(): Dog[] {
     return this.listDogs.slice();
   }
 

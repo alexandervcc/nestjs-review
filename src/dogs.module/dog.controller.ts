@@ -24,13 +24,13 @@ import { DogService } from './dog.service';
 @Controller('dogs')
 @UseGuards(AuthGuard)//Using guard with DI
 export class DogController {
-  constructor(private readonly appService: DogService) {}
+  constructor(private readonly dogService: DogService) {}
 
   @Get()
   @HttpCode(200)
   @Header('Cache-Control', 'none')
   getAllDogs(): Dog[] {
-    return this.appService.getAllDogs();
+    return this.dogService.getAll();
   }
 
   @Post('/add')
@@ -38,7 +38,7 @@ export class DogController {
   @Roles("admin")//Custom decorator in order to check metadata
   @UsePipes(new DogValidationPipeJoi(createDogSchema))
   async createDogJoi(@Body() dogDto: Dog): Promise<Dog> {
-    return await this.appService.createNewDog(dogDto);
+    return await this.dogService.createNewDog(dogDto);
   }
 
   @Post('/create')
@@ -46,7 +46,7 @@ export class DogController {
   async createDogClassValidation(
     @Body(new DogValidationPipeClass()) dogDto: Dog,
   ): Promise<Dog> {
-    return await this.appService.createNewDog(dogDto);
+    return await this.dogService.createNewDog(dogDto);
   }
 
   @Get('/redirect')
@@ -62,6 +62,6 @@ export class DogController {
     )
     idDog: number,
   ): Dog {
-    return this.appService.getById(idDog);
+    return this.dogService.getById(idDog);
   }
 }
