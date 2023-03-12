@@ -1,7 +1,7 @@
 //Servidor -> rutas para graphql
 import { ApolloServer } from "apollo-server-express";
 import express from "express";
-import { StatusResolvers } from "./resolvers/status";
+import { StatusResolvers } from "./resolvers/status.resolver";
 import { buildSchema } from "type-graphql";
 
 export const startServer = async () => {
