@@ -13,7 +13,7 @@ import { ProductDto } from "../dto/ProductDto";
 import { Product } from "../model/Product";
 import { PubSubEngine } from "graphql-subscriptions";
 import { CONSTANTS } from "../utils/constants";
-import { ProductSubs } from "../dto/SubscriptionDto";
+import { ProductPayload } from "../dto/ProductSubPayload";
 const { v4: uuidv4 } = require("uuid");
 
 @Resolver()
@@ -26,9 +26,9 @@ export class ProductResolver {
     const newProduct = Product.create({ ...productDto });
     console.log("prod: ", productDto);
     const dbProduct = await newProduct.save();
-    const productSub = {
-      ...dbProduct,
+    const productSub:ProductPayload = {
       mutation: "CREATE",
+      data: dbProduct,
     };
     await pubSub.publish(CONSTANTS.NOTIFICATION, productSub);
     return dbProduct;
@@ -36,10 +36,18 @@ export class ProductResolver {
 
   @Mutation(() => Boolean)
   async deleteProduct(
+    @PubSub() pubSub: PubSubEngine,
     @Arg("id", () => Int) idProduct: number
   ): Promise<Boolean> {
     console.log("Deleting Product: ", idProduct);
+    const productSub = {
+      mutation: "DELETE",
+      data: {
+        id: idProduct,
+      },
+    };
     await Product.delete(idProduct);
+    await pubSub.publish(CONSTANTS.NOTIFICATION, productSub);
     return true;
   }
 
@@ -48,22 +56,11 @@ export class ProductResolver {
     return await Product.find();
   }
 
-  //Dynamic Subscription to a topic
-  @Mutation(() => Boolean)
-  async pubSubMutationToDynamicTopic(
-    @PubSub() pubSub: PubSubEngine,
-    @Arg("topic") topic: string,
-    @Arg("message", { nullable: true }) message?: string
-  ): Promise<boolean> {
-    const payload = { id: uuidv4(), message };
-    await pubSub.publish(topic, payload);
-    return true;
-  }
-
-  @Subscription(() => Boolean, { topics: CONSTANTS.NOTIFICATION })
+  @Subscription(() => ProductPayload, { topics: CONSTANTS.NOTIFICATION })
   async normalSubscription(
-    @Root() { id, message }: { id: string; message: string }
-  ): Promise<any> {
-    return { id, message, date: new Date() };
+    @Root() data: ProductPayload
+  ): Promise<ProductPayload> {
+    console.log("normal subscription: ", data);
+    return data;
   }
 }
