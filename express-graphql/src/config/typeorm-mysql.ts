@@ -1,5 +1,6 @@
 import { DataSource } from "typeorm";
-import path from "path";
+import path, { resolve } from "path";
+import { Product } from "../model/Product";
 
 export const connectDB = async () => {
   const dbConnection = new DataSource({
@@ -9,7 +10,7 @@ export const connectDB = async () => {
     username: "graphql",
     password: "graphql",
     database: "graphql",
-    entities: [path.join(__dirname, "../model/**.ts")],
+    entities: [Product],
     synchronize: true,
   });
   try {
