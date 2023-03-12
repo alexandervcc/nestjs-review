@@ -12,20 +12,24 @@ import {
   ApolloServerPluginDrainHttpServer,
   ApolloServerPluginLandingPageLocalDefault,
 } from "apollo-server-core";
-import { makeExecutableSchema } from "@graphql-tools/schema";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { WebSocketServer } from "ws";
+import { redisConnection } from "./config/redis-pubsub";
 
 export const startServer = async () => {
+  const redisSubPub = await redisConnection();
+
   const schema = await buildSchema({
     resolvers: [StatusResolvers, ProductResolver],
+    pubSub: redisSubPub
   });
+
 
   const app = express();
   const httpServer = createServer(app);
   const wsServer = new WebSocketServer({
     server: httpServer,
-    path: "/graphql-subs",
+    path: "/graphql",
   });
   const serverCleanup = useServer({ schema }, wsServer);
 
