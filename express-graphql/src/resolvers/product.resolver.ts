@@ -26,7 +26,7 @@ export class ProductResolver {
     const newProduct = Product.create({ ...productDto });
     console.log("prod: ", productDto);
     const dbProduct = await newProduct.save();
-    const productSub:ProductPayload = {
+    const productSub: ProductPayload = {
       mutation: "CREATE",
       data: dbProduct,
     };
@@ -40,13 +40,12 @@ export class ProductResolver {
     @Arg("id", () => Int) idProduct: number
   ): Promise<Boolean> {
     console.log("Deleting Product: ", idProduct);
+    const productDeleted = await Product.findBy({ id: idProduct });
+    await Product.delete(idProduct);
     const productSub = {
       mutation: "DELETE",
-      data: {
-        id: idProduct,
-      },
+      data: productDeleted,
     };
-    await Product.delete(idProduct);
     await pubSub.publish(CONSTANTS.NOTIFICATION, productSub);
     return true;
   }
@@ -56,7 +55,10 @@ export class ProductResolver {
     return await Product.find();
   }
 
-  @Subscription(() => ProductPayload, { topics: CONSTANTS.NOTIFICATION })
+  @Subscription(() => ProductPayload, {
+    topics: CONSTANTS.NOTIFICATION,
+    nullable: true,
+  })
   async normalSubscription(
     @Root() data: ProductPayload
   ): Promise<ProductPayload> {

@@ -6,6 +6,6 @@ export class ProductPayload {
   @Field(() => String)
   mutation!: string;
 
-  @Field(() => Product)
+  @Field(() => Product, { nullable: true })
   data!: Product;
 }

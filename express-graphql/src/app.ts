@@ -54,5 +54,5 @@ export const startServer = async () => {
 
   await apolloServer.start();
   apolloServer.applyMiddleware({ app, path: "/graphql" });
-  return app;
+  return httpServer;
 };
