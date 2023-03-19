@@ -1,3 +1,8 @@
-export const CONSTANTS = {
-  NOTIFICATION: "NOTIFICATION",
+export const constants = {
+  notification: "NOTIFICATION",
+
+  collections: {
+    user: "user",
+    product: "product",
+  },
 };

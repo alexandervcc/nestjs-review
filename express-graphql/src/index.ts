@@ -2,14 +2,17 @@ require("dotenv").config();
 
 import "reflect-metadata";
 import { startServer } from "./app";
-import { connectMongoDB } from "./config/mongodb";
-import { connectMySqlDB } from "./config/typeorm-mysql";
+import { initializeDB } from "./dao";
 
 const main = async () => {
-  await connectMySqlDB();
-  await connectMongoDB();
-  const app = await startServer();
   const PORT = process.env.SERVER_PORT;
+  const MONGO_URL = process.env.MONGO_URL as string;
+  const DB_NAME = process.env.DB_NAME as string;
+
+  await initializeDB(MONGO_URL, DB_NAME);
+
+  const app = await startServer();
+
   app.listen(PORT);
   console.log("Server running on: ", PORT);
 };

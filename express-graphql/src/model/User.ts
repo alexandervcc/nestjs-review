@@ -1,20 +1,8 @@
-/* import { ObjectType, Field, Int } from "type-graphql";
+import { ObjectId } from "mongoose";
 
 export class User {
-  @Field()
-  @PrimaryGeneratedColumn()
-  id!: number;
-
-  @Field(() => String)
-  @Column()
-  name!: string;
-
-  @Field(() => Int)
-  @Column("int", { default: 0 })
-  qty!: number;
-
-  @Field(() => String)
-  @CreateDateColumn({ type: "timestamp" })
-  createdAt!: string;
+  _id!: ObjectId;
+  username!: string;
+  email!: string;
+  password!: string;
 }
- */

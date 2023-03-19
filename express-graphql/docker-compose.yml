@@ -16,14 +16,14 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass gql-subpub
     volumes:
       - cache:/data
-  mongodb-auth:
+  mongodb:
     image: mongo
     ports:
       - 27017:27017
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=auth-graphql
-      - MONGO_INITDB_ROOT_PASSWORD=auth-graphql
-      - MONGO_INITDB_DATABASE=auth-graphql
+      - MONGO_INITDB_ROOT_USERNAME=graphql
+      - MONGO_INITDB_ROOT_PASSWORD=graphql
+      - MONGO_INITDB_DATABASE=graphql
 volumes:
   cache:
     driver: local
