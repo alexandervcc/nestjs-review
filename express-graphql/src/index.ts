@@ -1,14 +1,17 @@
+require("dotenv").config();
+
 import "reflect-metadata";
 import { startServer } from "./app";
-import { connectDB } from "./config/typeorm-mysql";
-
-const SERVER_PORT = 3000;
+import { connectMongoDB } from "./config/mongodb";
+import { connectMySqlDB } from "./config/typeorm-mysql";
 
 const main = async () => {
-  await connectDB();
+  await connectMySqlDB();
+  await connectMongoDB();
   const app = await startServer();
-  app.listen(SERVER_PORT);
-  console.log("Server running on: ", SERVER_PORT);
+  const PORT = process.env.SERVER_PORT;
+  app.listen(PORT);
+  console.log("Server running on: ", PORT);
 };
 
 main();
