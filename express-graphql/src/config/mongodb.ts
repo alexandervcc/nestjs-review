@@ -1,14 +1,19 @@
+import { UserDto } from "../dto/UserDto";
+
 const { MongoClient } = require("mongodb");
 
-let db: any;
+export const client = new MongoClient(process.env.MONGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+export let db: { collection: (arg0: string) => { (): any; new(): any; save: { (arg0: UserDto): any; new(): any; }; }; };
 
 export const connectMongoDB = async () => {
   try {
-    if (!db) {
-      const xdb = new MongoClient(process.env.MONGO_URL);
-      console.log("Mongo DB conected!");
-    }
-    return db;
+    client.connect();
+    db = client.db("auth-graphql");
+    console.log("Mongo DB conected!");
   } catch (error) {
     console.error("Error connecting to the Mongo DB: ", error);
   }

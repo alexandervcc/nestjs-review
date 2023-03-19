@@ -15,15 +15,15 @@ import {
 import { useServer } from "graphql-ws/lib/use/ws";
 import { WebSocketServer } from "ws";
 import { redisConnection } from "./config/redis-pubsub";
+import { AuthResolver } from "./resolvers/auth.resolver";
 
 export const startServer = async () => {
   const redisSubPub = await redisConnection();
 
   const schema = await buildSchema({
-    resolvers: [StatusResolvers, ProductResolver],
-    pubSub: redisSubPub
+    resolvers: [StatusResolvers, ProductResolver, AuthResolver],
+    pubSub: redisSubPub,
   });
-
 
   const app = express();
   const httpServer = createServer(app);
