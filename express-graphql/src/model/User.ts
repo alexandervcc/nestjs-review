@@ -1,20 +1,17 @@
-/* import { ObjectType, Field, Int } from "type-graphql";
+import { ObjectId } from "mongodb";
+import { Field, ObjectType } from "type-graphql";
 
+@ObjectType()
 export class User {
-  @Field()
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @Field(() => String, { nullable: true })
+  _id!: ObjectId;
 
   @Field(() => String)
-  @Column()
-  name!: string;
-
-  @Field(() => Int)
-  @Column("int", { default: 0 })
-  qty!: number;
+  username!: string;
 
   @Field(() => String)
-  @CreateDateColumn({ type: "timestamp" })
-  createdAt!: string;
+  password!: string;
+
+  @Field(() => String)
+  email!: string;
 }
- */

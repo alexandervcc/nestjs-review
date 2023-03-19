@@ -10,11 +10,11 @@ import {
   Root,
 } from "type-graphql";
 import { ProductDto } from "../dto/ProductDto";
-import { Product } from "../model/Product";
 import { PubSubEngine } from "graphql-subscriptions";
-import { CONSTANTS } from "../utils/constants";
+import { constants } from "../utils/constants";
 import { ProductPayload } from "../dto/ProductSubPayload";
-const { v4: uuidv4 } = require("uuid");
+import { Product } from "../model/Product";
+import { productDao } from "../dao/product.dao";
 
 @Resolver()
 export class ProductResolver {
@@ -22,41 +22,39 @@ export class ProductResolver {
   async createProduct(
     @PubSub() pubSub: PubSubEngine,
     @Args({ validate: false }) productDto: ProductDto
-  ): Promise<Product> {
-    const newProduct = Product.create({ ...productDto });
-    console.log("prod: ", productDto);
-    const dbProduct = await newProduct.save();
+  ) {
+    const newProduct = productDto as Product;
+    const dbProduct = await productDao.saveNewProduct(newProduct);
     const productSub: ProductPayload = {
       mutation: "CREATE",
       data: dbProduct,
     };
-    await pubSub.publish(CONSTANTS.NOTIFICATION, productSub);
+    await pubSub.publish(constants.notification, productSub);
     return dbProduct;
   }
 
   @Mutation(() => Boolean)
   async deleteProduct(
     @PubSub() pubSub: PubSubEngine,
-    @Arg("id", () => Int) idProduct: number
+    @Arg("id", () => String) idProduct: string
   ): Promise<Boolean> {
     console.log("Deleting Product: ", idProduct);
-    const productDeleted = await Product.findBy({ id: idProduct });
-    await Product.delete(idProduct);
+    await productDao.deleteById(idProduct);
     const productSub = {
       mutation: "DELETE",
-      data: productDeleted,
+      data: {},
     };
-    await pubSub.publish(CONSTANTS.NOTIFICATION, productSub);
+    await pubSub.publish(constants.notification, productSub);
     return true;
   }
 
   @Query(() => [Product])
   async products() {
-    return await Product.find();
+    return await productDao.findAll();
   }
 
   @Subscription(() => ProductPayload, {
-    topics: CONSTANTS.NOTIFICATION,
+    topics: constants.notification,
     nullable: true,
   })
   async normalSubscription(

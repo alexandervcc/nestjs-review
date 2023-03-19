@@ -1,19 +1,14 @@
 import { Resolver, Mutation, Args } from "type-graphql";
-import { db} from "../config/mongodb";
+import { userDao } from "../dao/user.dao";
 import { UserDto } from "../dto/UserDto";
+import { User } from "../model/User";
 
 @Resolver()
 export class AuthResolver {
-  @Mutation(() => String)
-  async signUp(@Args({ validate: false }) newUser: UserDto): Promise<String> {
-    try {
-      console.log("db: ",db)
-      const userDb = await db.collection("user").save(newUser)
-      console.log("user created: ", userDb);
-      return "created";
-    } catch (error) {
-      console.log("ERROR: ",error)
-      return "error"
-    }
+  @Mutation(() => User)
+  async signUp(@Args({ validate: false }) userDto: UserDto){
+    const newUser = userDto as User;
+    const dbUser = await userDao.createNewUser(newUser);
+    return dbUser;
   }
 }
