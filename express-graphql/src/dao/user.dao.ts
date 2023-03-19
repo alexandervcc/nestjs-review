@@ -9,12 +9,20 @@ class UserDao {
     this.userCollection = db.collection<User>(constants.collections.user);
   }
 
-  async saveNewUser(newUser: User) {
+  async createNewUser(newUser: User) {
     try {
       const userDb = await this.userCollection.insertOne(newUser);
-      return userDb;
+      return { ...newUser, _id: userDb.insertedId };
     } catch (error) {
-      console.error("ERROR: ", error);
+      throw new Error(`User can not be created:  ${error}`);
+    }
+  }
+
+  async findUser(user: User) {
+    try {
+      return await this.userCollection.findOne({ username: user.username });
+    } catch (error) {
+      throw new Error(`User can not be found:  ${error}`);
     }
   }
 }
