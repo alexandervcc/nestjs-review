@@ -37,8 +37,3 @@ class ProductDao {
     }
   }
 }
-export let productDao: ProductDao;
-
-export const initializeProductDao = async () => {
-  productDao = new ProductDao(MongoConnection.db);
-};

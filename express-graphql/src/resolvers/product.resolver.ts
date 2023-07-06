@@ -1,4 +1,4 @@
-import {
+/* import {
   Resolver,
   Mutation,
   Args,
@@ -16,7 +16,7 @@ import { productDao } from "../dao/product.dao";
 import { GraphqlSubscriptionTopics } from "../types/constants";
 
 @Resolver()
-export class ProductResolver {
+class ProductResolver {
   @Mutation(() => ProductDto)
   async createProduct(
     @PubSub() pubSub: PubSubEngine,
@@ -47,11 +47,6 @@ export class ProductResolver {
     return true;
   }
 
-  @Query(() => [ProductDto])
-  async products() {
-    return await productDao.findAll();
-  }
-
   @Subscription(() => ProductPayload, {
     topics: GraphqlSubscriptionTopics.Notification,
     nullable: true,
@@ -63,3 +58,4 @@ export class ProductResolver {
     return data;
   }
 }
+ */

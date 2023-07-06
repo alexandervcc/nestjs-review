@@ -1,14 +1,26 @@
-import { Resolver, Mutation, Args } from "type-graphql";
+import { Resolver, Mutation, Args, Query, Arg } from "type-graphql";
 import { UserDto } from "../dto/UserDto";
-import { AuthServiceI } from "../services/interfaces/auth-service";
-import { ResultDto } from "../dto/ResultDto";
+import { Result, ResultDto } from "../dto/ResultDto";
+import Container from "typedi";
+import AuthService from "../services/auth.service";
+import MongoConnection from "../config/mongodb";
 
 @Resolver()
-export class AuthResolver {
-  constructor(private authService: AuthServiceI) {}
+class AuthResolver {
+  private authService: AuthService;
+  constructor() {
+    this.authService = Container.get(AuthService);
+  }
 
   @Mutation(() => ResultDto)
-  async signUp(@Args({ validate: false }) userDto: UserDto) {
-    return this.authService.signUp(userDto);
+  async signUp(@Args({ validate: false }) userDto: UserDto): Promise<Result> {
+    return await this.authService.signUp(userDto);
+  }
+
+  @Query(() => UserDto)
+  async getUserData(@Arg("id") id: string) {
+    return new UserDto();
   }
 }
+
+export default AuthResolver;

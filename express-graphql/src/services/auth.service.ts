@@ -12,7 +12,8 @@ class AuthService implements AuthServiceI {
   constructor(
     @Inject() private kafkaProducer: KafkaProducer,
     @Inject() private userDao: UserDao
-  ) {}
+  ) {
+  }
 
   async signUp(user: UserDto): Promise<Result> {
     const result: Result = {

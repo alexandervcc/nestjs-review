@@ -1,14 +1,14 @@
 import { Db } from "mongodb";
-import { MongoConnection } from "../config/mongodb";
 import { User } from "../model/User";
-import { Service } from "typedi";
+import { Inject, Service } from "typedi";
 import { MongoCollections } from "../types/constants";
+import MongoConnection from "../config/mongodb";
 
 @Service()
 class UserDao {
   private collection;
-  constructor(db: Db) {
-    this.collection = db.collection<User>(MongoCollections.User);
+  constructor(@Inject() mongo: MongoConnection) {
+    this.collection = mongo.db.collection<User>(MongoCollections.User);
   }
 
   async createNewUser(newUser: User) {

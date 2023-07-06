@@ -1,17 +1,17 @@
 import "reflect-metadata";
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 import { startServer } from "./app";
-import { initializeDB } from "./dao";
+import { Container } from "typedi";
+import MongoConnection from "./config/mongodb";
+import UserDao from "./dao/user.dao";
+import AuthService from "./services/auth.service";
+import AuthResolver from "./resolvers/auth.resolver";
 
 dotenv.config();
 
 const main = async () => {
   const PORT = process.env.SERVER_PORT;
-  const MONGO_URL = process.env.MONGO_URL as string;
-  const DB_NAME = process.env.DB_NAME as string;
-
-  await initializeDB(MONGO_URL, DB_NAME);
-
+  Container.get(MongoConnection)
   const app = await startServer();
 
   app.listen(PORT);

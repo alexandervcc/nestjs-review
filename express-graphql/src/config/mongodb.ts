@@ -1,31 +1,27 @@
+import "reflect-metadata";
+import dotenv from "dotenv";
 import { MongoClient, Db } from "mongodb";
 import { connect } from "mongoose";
 import { Service } from "typedi";
 
+dotenv.config();
+
 @Service()
-export class MongoConnection {
+class MongoConnection {
   private client!: MongoClient;
-  static db: Db;
-  private dbConnected = false;
+  db!: Db;
 
-  constructor(private MONGO_URL: string, private DB_NAME: string) {
-    this.client = new MongoClient(MONGO_URL);
-    this.client.on("open", () => {
-      this.dbConnected = true;
-    });
-    this.client.on("topologyClosed", () => {
-      this.dbConnected = false;
-    });
-  }
+  constructor() {
+    (async () => {
+      const MONGO_URL = process.env.MONGO_URL as string;
+      const DB_NAME = process.env.DB_NAME as string;
 
-  async initialize(): Promise<void> {
-    if (!this.dbConnected) {
-      await connect(this.MONGO_URL, {
-        dbName: this.DB_NAME,
-      });
+      this.client = new MongoClient(MONGO_URL);
       await this.client.connect();
-      MongoConnection.db = this.client.db(this.DB_NAME);
+      this.db = this.client.db(DB_NAME);
       console.log("Connected to MongoDB server");
-    }
+    })();
   }
 }
+
+export default MongoConnection;

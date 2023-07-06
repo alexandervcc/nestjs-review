@@ -2,8 +2,6 @@
 import { ApolloServer } from "apollo-server-express";
 
 import express from "express";
-import { StatusResolvers } from "./resolvers/status.resolver";
-import { ProductResolver } from "./resolvers/product.resolver";
 import { buildSchema } from "type-graphql";
 
 //Dependencias para subscriptions
@@ -15,14 +13,15 @@ import {
 import { useServer } from "graphql-ws/lib/use/ws";
 import { WebSocketServer } from "ws";
 import { redisConnection } from "./config/redis-pubsub";
-import { AuthResolver } from "./resolvers/auth.resolver";
+import { resolvers } from "./resolvers";
 
 export const startServer = async () => {
   const redisSubPub = await redisConnection();
 
   const schema = await buildSchema({
-    resolvers: [StatusResolvers, ProductResolver, AuthResolver],
+    resolvers,
     pubSub: redisSubPub,
+    emitSchemaFile: true,
   });
 
   const app = express();
