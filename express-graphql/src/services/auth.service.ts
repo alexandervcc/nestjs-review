@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import UserDao from "../dao/user.dao";
-import { Result, ResultDto } from "../dto/ResultDto";
-import { UserDto } from "../dto/UserDto";
+import { Result } from "../dto/ResultDto";
+import { User, UserDto } from "../dto/UserDto";
 import { ResultStatus } from "../types/enums/Result";
 import { AuthServiceI } from "./interfaces/auth-service";
 import KafkaProducer from "./kafka-producer";
@@ -12,7 +12,10 @@ class AuthService implements AuthServiceI {
   constructor(
     @Inject() private kafkaProducer: KafkaProducer,
     @Inject() private userDao: UserDao
-  ) {
+  ) {}
+
+  async getUserById(_id: string): Promise<User | null> {
+    return await this.userDao.findUserById(new ObjectId(_id));
   }
 
   async signUp(user: UserDto): Promise<Result> {

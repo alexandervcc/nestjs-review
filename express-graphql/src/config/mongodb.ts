@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import dotenv from "dotenv";
 import { MongoClient, Db } from "mongodb";
-import { connect } from "mongoose";
 import { Service } from "typedi";
 
 dotenv.config();

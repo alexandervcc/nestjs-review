@@ -1,8 +1,8 @@
-import { Db } from "mongodb";
 import { User } from "../model/User";
 import { Inject, Service } from "typedi";
 import { MongoCollections } from "../types/constants";
 import MongoConnection from "../config/mongodb";
+import { ObjectId } from "mongodb";
 
 @Service()
 class UserDao {
@@ -17,6 +17,10 @@ class UserDao {
 
   async findUserByEmail(email: string) {
     return await this.collection.findOne({ email });
+  }
+
+  async findUserById(_id: ObjectId): Promise<User | null> {
+    return await this.collection.findOne<User>({ _id });
   }
 }
 

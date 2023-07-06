@@ -8,7 +8,7 @@ type Mutation {
 }
 
 type Query {
-  getUserData(id: String!): UserDto!
+  getUserData(id: String!): User!
 }
 
 type ResultDto {
@@ -16,8 +16,8 @@ type ResultDto {
   result: String!
 }
 
-type UserDto {
+type User {
+  _id: ID!
   email: String!
-  password: String!
   username: String!
 }
