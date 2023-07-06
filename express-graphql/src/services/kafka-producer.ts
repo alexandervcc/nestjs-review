@@ -1,7 +1,9 @@
 import kafkaConnection from "../config/kafka";
 import { Producer } from "kafkajs";
-import { KafkaTopics } from "../constants";
+import { Service } from "typedi";
+import { KafkaTopics } from "../types/constants";
 
+@Service()
 class KafkaProducer {
   private readonly producer: Producer;
   constructor() {
