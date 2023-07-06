@@ -13,11 +13,11 @@ import { PubSubEngine } from "graphql-subscriptions";
 import { ProductPayload } from "../dto/ProductSubPayload";
 import { Product } from "../model/Product";
 import { productDao } from "../dao/product.dao";
-import { GraphqlSubscriptionTopics } from "../constants";
+import { GraphqlSubscriptionTopics } from "../types/constants";
 
 @Resolver()
 export class ProductResolver {
-  @Mutation(() => Product)
+  @Mutation(() => ProductDto)
   async createProduct(
     @PubSub() pubSub: PubSubEngine,
     @Args({ validate: false }) productDto: ProductDto
@@ -47,7 +47,7 @@ export class ProductResolver {
     return true;
   }
 
-  @Query(() => [Product])
+  @Query(() => [ProductDto])
   async products() {
     return await productDao.findAll();
   }
