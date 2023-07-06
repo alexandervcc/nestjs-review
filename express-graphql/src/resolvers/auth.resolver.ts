@@ -1,14 +1,14 @@
 import { Resolver, Mutation, Args } from "type-graphql";
-import { userDao } from "../dao/user.dao";
 import { UserDto } from "../dto/UserDto";
 import { User } from "../model/User";
+import { AuthServiceI } from "../services/interfaces/auth-service";
 
 @Resolver()
 export class AuthResolver {
-  @Mutation(() => User)
-  async signUp(@Args({ validate: false }) userDto: UserDto){
-    const newUser = userDto as User;
-    const dbUser = await userDao.createNewUser(newUser);
-    return dbUser;
+  constructor(private authService: AuthServiceI) {}
+
+  @Mutation(() => UserDto)
+  async signUp(@Args({ validate: false }) userDto: UserDto) {
+    return this.authService.signUp(userDto);
   }
 }

@@ -1,8 +1,10 @@
 import { Db, ObjectId } from "mongodb";
 import { MongoConnection } from "../config/mongodb";
 import { Product } from "../model/Product";
-import { MongoCollections } from "../constants";
+import { MongoCollections } from "../types/constants";
+import { Service } from "typedi";
 
+@Service()
 class ProductDao {
   private productCollection;
   constructor(db: Db) {

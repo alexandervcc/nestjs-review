@@ -1,5 +1,5 @@
-import dotenv from 'dotenv'
 import "reflect-metadata";
+import dotenv from 'dotenv'
 import { startServer } from "./app";
 import { initializeDB } from "./dao";
 

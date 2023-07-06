@@ -1,6 +1,8 @@
 import { MongoClient, Db } from "mongodb";
 import { connect } from "mongoose";
+import { Service } from "typedi";
 
+@Service()
 export class MongoConnection {
   private client!: MongoClient;
   static db: Db;

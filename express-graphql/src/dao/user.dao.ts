@@ -1,34 +1,23 @@
 import { Db } from "mongodb";
 import { MongoConnection } from "../config/mongodb";
 import { User } from "../model/User";
-import { MongoCollections } from "../constants";
+import { Service } from "typedi";
+import { MongoCollections } from "../types/constants";
 
+@Service()
 class UserDao {
-  private userCollection;
+  private collection;
   constructor(db: Db) {
-    this.userCollection = db.collection<User>(MongoCollections.User);
+    this.collection = db.collection<User>(MongoCollections.User);
   }
 
   async createNewUser(newUser: User) {
-    try {
-      const userDb = await this.userCollection.insertOne(newUser);
-      return { ...newUser, _id: userDb.insertedId };
-    } catch (error) {
-      throw new Error(`User can not be created:  ${error}`);
-    }
+    return await this.collection.insertOne(newUser);
   }
 
-  async findUser(user: User) {
-    try {
-      return await this.userCollection.findOne({ username: user.username });
-    } catch (error) {
-      throw new Error(`User can not be found:  ${error}`);
-    }
+  async findUserByEmail(email: string) {
+    return await this.collection.findOne({ email });
   }
 }
 
-export let userDao: UserDao;
-
-export const initializeUserDao = async () => {
-  userDao = new UserDao(MongoConnection.db);
-};
+export default UserDao;
