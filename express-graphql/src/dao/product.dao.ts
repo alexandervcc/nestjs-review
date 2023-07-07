@@ -1,14 +1,12 @@
 import { Db, ObjectId } from "mongodb";
 import { MongoConnection } from "../config/mongodb";
 import { Product } from "../model/Product";
-import { constants } from "../utils/constants";
+import { MongoCollections } from "../utils";
 
 class ProductDao {
   private productCollection;
   constructor(db: Db) {
-    this.productCollection = db.collection<Product>(
-      constants.collections.product
-    );
+    this.productCollection = db.collection<Product>(MongoCollections.Product);
   }
 
   async saveNewProduct(newProduct: Product): Promise<Product> {

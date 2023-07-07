@@ -1,12 +1,12 @@
 import { Db } from "mongodb";
 import { MongoConnection } from "../config/mongodb";
 import { User } from "../model/User";
-import { constants } from "../utils/constants";
+import { MongoCollections } from "../utils";
 
 class UserDao {
   private userCollection;
   constructor(db: Db) {
-    this.userCollection = db.collection<User>(constants.collections.user);
+    this.userCollection = db.collection<User>(MongoCollections.User);
   }
 
   async createNewUser(newUser: User) {

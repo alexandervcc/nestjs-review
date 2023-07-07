@@ -10,10 +10,10 @@ import {
 } from "type-graphql";
 import { ProductDto } from "../dto/ProductDto";
 import { PubSubEngine } from "graphql-subscriptions";
-import { constants } from "../utils/constants";
 import { ProductPayload } from "../dto/ProductSubPayload";
 import { Product } from "../model/Product";
 import { productDao } from "../dao/product.dao";
+import { GraphqlSubscriptionTopics } from "./../utils";
 
 @Resolver()
 export class ProductResolver {
@@ -28,7 +28,7 @@ export class ProductResolver {
       mutation: "CREATE",
       data: dbProduct,
     };
-    await pubSub.publish(constants.notification, productSub);
+    await pubSub.publish(GraphqlSubscriptionTopics.Notification, productSub);
     return dbProduct;
   }
 
@@ -43,7 +43,7 @@ export class ProductResolver {
       mutation: "DELETE",
       data: {},
     };
-    await pubSub.publish(constants.notification, productSub);
+    await pubSub.publish(GraphqlSubscriptionTopics.Notification, productSub);
     return true;
   }
 
@@ -53,7 +53,7 @@ export class ProductResolver {
   }
 
   @Subscription(() => ProductPayload, {
-    topics: constants.notification,
+    topics: GraphqlSubscriptionTopics.Notification,
     nullable: true,
   })
   async normalSubscription(
