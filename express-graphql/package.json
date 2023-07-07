@@ -21,6 +21,7 @@
     "graphql-redis-subscriptions": "^2.6.0",
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.12.0",
+    "kafkajs": "^2.2.4",
     "mongodb": "^5.1.0",
     "mongoose": "^7.0.2",
     "npm": "^9.6.1",
