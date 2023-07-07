@@ -4,7 +4,6 @@ import {
   Args,
   Arg,
   Query,
-  Int,
   Subscription,
   PubSub,
   Root,
@@ -37,7 +36,7 @@ export class ProductResolver {
   async deleteProduct(
     @PubSub() pubSub: PubSubEngine,
     @Arg("id", () => String) idProduct: string
-  ): Promise<Boolean> {
+  ): Promise<boolean> {
     console.log("Deleting Product: ", idProduct);
     await productDao.deleteById(idProduct);
     const productSub = {

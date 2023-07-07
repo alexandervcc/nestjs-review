@@ -1,4 +1,4 @@
-import { Field, ArgsType, Args } from "type-graphql";
+import { Field, ArgsType } from "type-graphql";
 
 @ArgsType()
 export class UserDto {

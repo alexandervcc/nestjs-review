@@ -1,8 +1,9 @@
-require("dotenv").config();
-
+import dotenv from 'dotenv'
 import "reflect-metadata";
 import { startServer } from "./app";
 import { initializeDB } from "./dao";
+
+dotenv.config();
 
 const main = async () => {
   const PORT = process.env.SERVER_PORT;
