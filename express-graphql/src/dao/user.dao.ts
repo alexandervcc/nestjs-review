@@ -1,7 +1,7 @@
 import { Db } from "mongodb";
 import { MongoConnection } from "../config/mongodb";
 import { User } from "../model/User";
-import { MongoCollections } from "../utils";
+import { MongoCollections } from "../constants";
 
 class UserDao {
   private userCollection;

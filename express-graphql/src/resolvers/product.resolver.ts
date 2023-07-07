@@ -13,7 +13,7 @@ import { PubSubEngine } from "graphql-subscriptions";
 import { ProductPayload } from "../dto/ProductSubPayload";
 import { Product } from "../model/Product";
 import { productDao } from "../dao/product.dao";
-import { GraphqlSubscriptionTopics } from "./../utils";
+import { GraphqlSubscriptionTopics } from "../constants";
 
 @Resolver()
 export class ProductResolver {

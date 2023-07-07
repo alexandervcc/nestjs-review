@@ -1,7 +1,7 @@
 import { Db, ObjectId } from "mongodb";
 import { MongoConnection } from "../config/mongodb";
 import { Product } from "../model/Product";
-import { MongoCollections } from "../utils";
+import { MongoCollections } from "../constants";
 
 class ProductDao {
   private productCollection;
