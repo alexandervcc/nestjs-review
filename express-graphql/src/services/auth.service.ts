@@ -1,21 +1,21 @@
-import { ObjectId } from "mongodb";
-import UserDao from "../dao/user.dao";
 import { Result } from "../dto/ResultDto";
 import { User, UserDto } from "../dto/UserDto";
 import { ResultStatus } from "../types/enums/Result";
 import { AuthServiceI } from "./interfaces/auth-service";
 import KafkaProducer from "./kafka-producer";
 import { Service, Inject } from "typedi";
+import UserModel from "./../model/User";
+import PasswordService from "./password.service";
 
 @Service()
 class AuthService implements AuthServiceI {
   constructor(
     @Inject() private kafkaProducer: KafkaProducer,
-    @Inject() private userDao: UserDao
+    @Inject() private passwordService: PasswordService
   ) {}
 
   async getUserById(_id: string): Promise<User | null> {
-    return await this.userDao.findUserById(new ObjectId(_id));
+    return await UserModel.findById(_id);
   }
 
   async signUp(user: UserDto): Promise<Result> {
@@ -23,23 +23,27 @@ class AuthService implements AuthServiceI {
       message: "User created.",
       result: ResultStatus.Success,
     };
-    const userExists = await this.userDao.findUserByEmail(user.email);
+
+    const userExists = await UserModel.find({
+      $or: [{ email: user.email }, { username: user.username }],
+    });
 
     if (userExists) {
-      result.message = "Email invalid, already in use.";
+      result.message = "Email/Username invalid, already in use.";
       result.result = ResultStatus.Error;
       return result;
     }
 
-    const userCreated = await this.userDao.createNewUser({
-      ...user,
-      _id: new ObjectId(),
-    });
+    const newUser = new UserModel({ ...user });
+    const validationErrors = newUser.validateSync();
 
-    if (!userCreated.acknowledged) {
-      result.message = "Failed to create, try again later.";
+    console.log("errors: ", validationErrors);
+    if (validationErrors) {
+      result.message = "Invalid values.";
       result.result = ResultStatus.Error;
     }
+
+    await newUser.save();
 
     return result;
   }
