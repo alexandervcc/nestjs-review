@@ -1,10 +1,9 @@
 import { Field, ArgsType, ObjectType, ID } from "type-graphql";
-import { User as UserI } from "../model/User";
 import { ObjectId } from "mongodb";
-
+import { User as UserI } from "../types/interfaces/User";
 @ArgsType()
 @ObjectType()
-export class UserDto implements Omit<UserI, "_id"> {
+export class UserDto implements Omit<User, "_id"> {
   @Field(() => String)
   username!: string;
 
