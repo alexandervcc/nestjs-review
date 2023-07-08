@@ -28,19 +28,18 @@ class AuthService implements AuthServiceI {
       $or: [{ email: user.email }, { username: user.username }],
     });
 
-    if (userExists) {
+    if (userExists.length !== 0) {
       result.message = "Email/Username invalid, already in use.";
       result.result = ResultStatus.Error;
       return result;
     }
-
     const newUser = new UserModel({ ...user });
     const validationErrors = newUser.validateSync();
 
-    console.log("errors: ", validationErrors);
     if (validationErrors) {
       result.message = "Invalid values.";
       result.result = ResultStatus.Error;
+      return result;
     }
 
     await newUser.save();
