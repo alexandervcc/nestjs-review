@@ -1,4 +1,4 @@
-import kafkaConnection from "../config/kafka";
+import kafkaConnection from "./kafka";
 import { Consumer } from "kafkajs";
 import { Service } from "typedi";
 import { KafkaTopics } from "../types/constants";
