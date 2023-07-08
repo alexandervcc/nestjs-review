@@ -3,7 +3,7 @@ import "reflect-metadata";
 import UserModel from "./../model/User";
 import PasswordService from "./password.service";
 import AuthService from "./auth.service";
-import KafkaProducer from "./kafka-producer";
+import KafkaProducer from "../config/kafka-producer";
 import JwtService from "./jwt.service";
 
 import { Error } from "mongoose";
@@ -13,7 +13,7 @@ import { LoginUserDto, UserDto } from "../dto/UserDto";
 import { ResultStatus } from "../types/enums/Result";
 
 //mocks
-jest.mock("./kafka-producer", () => {
+jest.mock("../config/kafka-producer", () => {
   return jest.fn().mockImplementation(() => ({
     sendMessageToBroke: jest.fn().mockResolvedValue(true),
   }));

@@ -1,14 +1,19 @@
-import { Result } from "../dto/ResultDto";
-import { LoginUserDto, UserDto } from "../dto/UserDto";
-import { ResultStatus } from "../types/enums/Result";
-import { AuthServiceI } from "./interfaces/auth-service";
-import KafkaProducer from "./kafka-producer";
 import { Service, Inject } from "typedi";
-import UserModel from "./../model/User";
+
+import KafkaProducer from "../config/kafka-producer";
 import PasswordService from "./password.service";
-import { TokenDto } from "../dto/TokenDto";
 import JwtService from "./jwt.service";
+
+import UserModel from "./../model/User";
+
+import { LoginUserDto, UserDto } from "../dto/UserDto";
+import { TokenDto } from "../dto/TokenDto";
+import { Result } from "../dto/ResultDto";
+
+import { AuthServiceI } from "./interfaces/auth-service";
+import { ResultStatus } from "../types/enums/Result";
 import { User } from "../types/interfaces/User";
+
 @Service()
 class AuthService implements AuthServiceI {
   constructor(

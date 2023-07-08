@@ -3,9 +3,8 @@ import * as bcrypt from "bcrypt";
 
 @Service()
 class PasswordService {
-  private generateSalt(): string {
-    return "crypto";
-  }
+  constructor() {}
+
   async hashPassword(cleanPassword: string): Promise<string> {
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
@@ -17,8 +16,7 @@ class PasswordService {
     password: string,
     hashedPassword: string
   ): Promise<boolean> {
-    const isMatch = await bcrypt.compare(password, hashedPassword);
-    return isMatch;
+    return await bcrypt.compare(password, hashedPassword);
   }
 }
 
