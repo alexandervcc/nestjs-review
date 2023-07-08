@@ -1,31 +1,53 @@
 import "reflect-metadata";
-import { Result } from "../dto/ResultDto";
-import { UserDto } from "../dto/UserDto";
-import { ResultStatus } from "../types/enums/Result";
+
 import UserModel from "./../model/User";
 import PasswordService from "./password.service";
 import AuthService from "./auth.service";
 import KafkaProducer from "./kafka-producer";
-import { Error } from "mongoose";
+import JwtService from "./jwt.service";
 
-// Mock the KafkaProducer class
+import { Error } from "mongoose";
+import { TokenDto } from "../dto/TokenDto";
+import { Result } from "../dto/ResultDto";
+import { LoginUserDto, UserDto } from "../dto/UserDto";
+import { ResultStatus } from "../types/enums/Result";
+
+//mocks
 jest.mock("./kafka-producer", () => {
   return jest.fn().mockImplementation(() => ({
     sendMessageToBroke: jest.fn().mockResolvedValue(true),
+  }));
+});
+jest.mock("./password.service", () => {
+  return jest.fn().mockImplementation(() => ({
+    hashPassword: jest.fn().mockResolvedValue("mockedHashedPassword"),
+    validatePassword: jest.fn().mockResolvedValue(true),
+  }));
+});
+jest.mock("./jwt.service", () => {
+  return jest.fn().mockImplementation(() => ({
+    createJwtToken: jest.fn().mockReturnValue("mockedToken"),
+    validatePassword: jest.fn().mockReturnValue(true),
   }));
 });
 
 describe("AuthService", () => {
   let authService: AuthService;
   let passwordService: PasswordService;
+  let jwtService: JwtService;
 
   beforeEach(() => {
     const kafkaProducer = new KafkaProducer();
+    jwtService = new JwtService();
     passwordService = new PasswordService();
-    authService = new AuthService(kafkaProducer, passwordService);
+    authService = new AuthService(kafkaProducer, passwordService, jwtService);
   });
 
-  describe("getUserById", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("getUserById()", () => {
     it("should return a user when a valid ID is provided", async () => {
       UserModel.findById = jest
         .fn()
@@ -47,7 +69,7 @@ describe("AuthService", () => {
     });
   });
 
-  describe("signUp", () => {
+  describe("signUp()", () => {
     it("should create a new user and return a success result", async () => {
       UserModel.find = jest.fn().mockResolvedValueOnce([]);
       UserModel.prototype.save = jest.fn();
@@ -123,6 +145,94 @@ describe("AuthService", () => {
       expect(UserModel.prototype.save).not.toHaveBeenCalled();
       expect(UserModel.prototype.validateSync).toHaveBeenCalled();
       expect(signUpResult).toEqual(result);
+    });
+  });
+
+  describe("logIn()", () => {
+    it("should log in a user with valid credentials and return a token", async () => {
+      const dbUser = {
+        username: "testuser",
+        password: "hashedpassword",
+      };
+      const generatedToken = "mockedtoken";
+      UserModel.findOne = jest.fn().mockResolvedValueOnce(dbUser);
+      passwordService.validatePassword = jest.fn().mockReturnValueOnce(true);
+      jwtService.createJwtToken = jest.fn().mockReturnValue(generatedToken);
+
+      const user: LoginUserDto = {
+        username: "testuser",
+        password: "password",
+      };
+
+      const result: TokenDto = {
+        message: "User Logged In",
+        result: ResultStatus.Success,
+        token: generatedToken,
+      };
+
+      const loginResult: TokenDto = await authService.logIn(user);
+
+      expect(UserModel.findOne).toHaveBeenCalledWith({
+        username: user.username,
+      });
+      expect(passwordService.validatePassword).toHaveBeenCalledWith(
+        user.password,
+        "hashedpassword"
+      );
+      expect(jwtService.createJwtToken).toHaveBeenCalledWith(dbUser);
+      expect(loginResult).toEqual(result);
+    });
+
+    it("should return an error result for an invalid username", async () => {
+      UserModel.findOne = jest.fn().mockResolvedValueOnce(null);
+
+      const user: LoginUserDto = {
+        username: "invaliduser",
+        password: "password",
+      };
+
+      const result: TokenDto = {
+        message: "User not found.",
+        result: ResultStatus.Error,
+      };
+
+      const loginResult: TokenDto = await authService.logIn(user);
+
+      expect(UserModel.findOne).toHaveBeenCalledWith({
+        username: user.username,
+      });
+      expect(passwordService.validatePassword).not.toHaveBeenCalled(); // Use passwordService mock
+      expect(loginResult).toEqual(result);
+    });
+
+    it("should return an error result for an invalid password", async () => {
+      UserModel.findOne = jest.fn().mockResolvedValueOnce({
+        username: "testuser",
+        password: "hashedpassword",
+      });
+
+      passwordService.validatePassword = jest.fn().mockReturnValueOnce(false);
+
+      const user: LoginUserDto = {
+        username: "testuser",
+        password: "invalidpassword",
+      };
+
+      const result: TokenDto = {
+        message: "Invalid credentials.",
+        result: ResultStatus.Error,
+      };
+
+      const loginResult: TokenDto = await authService.logIn(user);
+
+      expect(UserModel.findOne).toHaveBeenCalledWith({
+        username: user.username,
+      });
+      expect(passwordService.validatePassword).toHaveBeenCalledWith(
+        user.password,
+        "hashedpassword"
+      );
+      expect(loginResult).toEqual(result);
     });
   });
 });

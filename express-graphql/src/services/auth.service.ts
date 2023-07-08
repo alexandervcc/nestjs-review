@@ -1,17 +1,20 @@
 import { Result } from "../dto/ResultDto";
-import { User, UserDto } from "../dto/UserDto";
+import { LoginUserDto, UserDto } from "../dto/UserDto";
 import { ResultStatus } from "../types/enums/Result";
 import { AuthServiceI } from "./interfaces/auth-service";
 import KafkaProducer from "./kafka-producer";
 import { Service, Inject } from "typedi";
 import UserModel from "./../model/User";
 import PasswordService from "./password.service";
-
+import { TokenDto } from "../dto/TokenDto";
+import JwtService from "./jwt.service";
+import { User } from "../types/interfaces/User";
 @Service()
 class AuthService implements AuthServiceI {
   constructor(
     @Inject() private kafkaProducer: KafkaProducer,
-    @Inject() private passwordService: PasswordService
+    @Inject() private passwordService: PasswordService,
+    @Inject() private jwtService: JwtService
   ) {}
 
   async getUserById(_id: string): Promise<User | null> {
@@ -33,16 +36,52 @@ class AuthService implements AuthServiceI {
       result.result = ResultStatus.Error;
       return result;
     }
-    const newUser = new UserModel({ ...user });
+
+    const password = await this.passwordService.hashPassword(user.password);
+    const newUser = new UserModel({
+      ...user,
+      password,
+    });
     const validationErrors = newUser.validateSync();
 
     if (validationErrors) {
-      result.message = "Invalid values.";
+      result.message = `Invalid values.`;
       result.result = ResultStatus.Error;
       return result;
     }
 
     await newUser.save();
+
+    return result;
+  }
+
+  async logIn(user: LoginUserDto): Promise<TokenDto> {
+    const result: TokenDto = {
+      message: "User Logged In",
+      result: ResultStatus.Success,
+    };
+
+    const userFound = await UserModel.findOne<User>({
+      username: user.username,
+    });
+    if (!userFound) {
+      result.message = "User not found.";
+      result.result = ResultStatus.Error;
+      return result;
+    }
+
+    const validPassword = this.passwordService.validatePassword(
+      user.password,
+      userFound.password
+    );
+
+    if (!validPassword) {
+      result.message = "Invalid credentials.";
+      result.result = ResultStatus.Error;
+      return result;
+    }
+
+    result.token = this.jwtService.createJwtToken(userFound);
 
     return result;
   }

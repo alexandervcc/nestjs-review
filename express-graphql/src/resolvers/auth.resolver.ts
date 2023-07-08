@@ -1,8 +1,9 @@
 import { Resolver, Mutation, Args, Query, Arg } from "type-graphql";
-import { User, UserDto } from "../dto/UserDto";
+import { LoginUserDto, User, UserDto } from "../dto/UserDto";
 import { Result, ResultDto } from "../dto/ResultDto";
 import Container from "typedi";
 import AuthService from "../services/auth.service";
+import { TokenDto } from "../dto/TokenDto";
 
 @Resolver()
 class AuthResolver {
@@ -19,6 +20,11 @@ class AuthResolver {
   @Query(() => User)
   async getUserData(@Arg("id") _id: string) {
     return this.authService.getUserById(_id);
+  }
+
+  @Query(() => TokenDto)
+  async logIn(@Args() userLoginData: LoginUserDto) {
+    return this.authService.logIn(userLoginData);
   }
 }
 

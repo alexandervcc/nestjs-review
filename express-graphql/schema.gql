@@ -4,6 +4,7 @@
 # -----------------------------------------------
 
 type Mutation {
+  logIn(password: String!, username: String!): ResultDto!
   signUp(email: String!, password: String!, username: String!): ResultDto!
 }
 

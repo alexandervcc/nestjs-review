@@ -1,4 +1,5 @@
 import { Field, ObjectType } from "type-graphql";
+import { ResultStatus } from "../types/enums/Result";
 
 export interface Result {
   result: string;
@@ -8,7 +9,7 @@ export interface Result {
 @ObjectType()
 export class ResultDto implements Result {
   @Field(() => String)
-  result!: string;
+  result!: ResultStatus;
 
   @Field(() => String)
   message!: string;
