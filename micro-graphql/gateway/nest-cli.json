@@ -19,22 +19,22 @@
         "tsConfigPath": "apps/gateway/tsconfig.app.json"
       }
     },
-    "users-service": {
+    "users": {
       "type": "application",
-      "root": "apps/users-service",
+      "root": "apps/users",
       "entryFile": "main",
-      "sourceRoot": "apps/users-service/src",
+      "sourceRoot": "apps/users/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/users-service/tsconfig.app.json"
+        "tsConfigPath": "apps/users/tsconfig.app.json"
       }
     },
-    "posts-service": {
+    "posts": {
       "type": "application",
-      "root": "apps/posts-service",
+      "root": "apps/posts",
       "entryFile": "main",
-      "sourceRoot": "apps/posts-service/src",
+      "sourceRoot": "apps/posts/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/posts-service/tsconfig.app.json"
+        "tsConfigPath": "apps/posts/tsconfig.app.json"
       }
     }
   }
