@@ -18,4 +18,8 @@ export class PostsService {
   findOne(id: string) {
     return this.posts.find((p) => p.id === id);
   }
+
+  forAuthor(id: string): Post[] {
+    return this.posts.filter((p) => p.authorId === id);
+  }
 }

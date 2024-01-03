@@ -1,4 +1,5 @@
 import { ObjectType, Field, Directive, ID } from '@nestjs/graphql';
+import { Post } from './post.entity';
 
 @ObjectType()
 //Tells Apollo Federation to identify a user entity by the `id` field
@@ -7,10 +8,6 @@ export class User {
   @Field(() => ID)
   id: string;
 
-  @Field(() => String)
-  email: string;
-
-  @Field(() => String)
-  password: string;
-
+  @Field(() => [Post])
+  posts?: Post[];
 }
